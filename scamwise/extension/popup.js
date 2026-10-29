@@ -1,0 +1,5 @@
+import { createEngine } from './analyzer.js';
+const el=(s)=>document.querySelector(s);
+const rules=await (await fetch(chrome.runtime.getURL('rules.json'))).json();
+const engine=createEngine(rules);
+el('#scan').addEventListener('click',()=>{const input=el('#message').value.trim();const box=el('#result');if(!input){box.hidden=false;box.textContent='Paste a message first.';return;}const result=engine.analyze(input,{ti:{status:'not_configured'}});box.hidden=false;box.innerHTML='';const title=document.createElement('h3');title.className=result.risk_level;title.textContent=`${result.risk_level.toUpperCase()} RISK · ${result.score}/100`;box.append(title);const summary=document.createElement('p');summary.textContent=result.summary;box.append(summary);const list=document.createElement('ul');for(const item of result.indicators){const li=document.createElement('li');li.textContent=`${item.label}: ${item.detail||item.advice}`;list.append(li);}box.append(list);const caveat=document.createElement('p');caveat.textContent='Heuristic result only. No URL was visited and no live reputation lookup was performed.';box.append(caveat);});

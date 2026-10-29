@@ -1,0 +1,380 @@
+{
+ "version": "1.0.0",
+ "notes": "Single source of truth for SCAMWISE heuristics. Patterns are case-insensitive JavaScript/Dart-compatible regular expressions. Weights add up to a 0-100 score.",
+ "thresholds": {
+  "high": 60,
+  "medium": 30
+ },
+ "text_rules": [
+  {
+   "code": "credential_request",
+   "family": "phishing",
+   "weight": 40,
+   "label": "Asks for an OTP, PIN, password or banking credentials",
+   "advice": "Legitimate banks, apps and government services never ask you to share an OTP, PIN, CVV or password.",
+   "patterns": [
+    "\\b(share|send|tell|give|provide|enter|confirm|forward|reply with|read out|submit)\\b[^.\\n]{0,40}\\b(otp|one[- ]?time (password|code|pin)|verification code|security code|upi ?pin|atm ?pin|m-?pin|cvv|card (number|details)|net ?banking|login (details|credentials)|password|passcode)",
+    "\\b(otp|upi ?pin|cvv|password)\\b[^.\\n]{0,20}\\b(bata(o|iye|na)?|bhejo|bhej do|share karo|de do|batayein)\\b",
+    "\\bwhat is (the|your) (otp|code|pin)\\b"
+   ],
+   "negatable": true
+  },
+  {
+   "code": "urgency",
+   "family": "pressure",
+   "weight": 15,
+   "label": "Creates urgency or a short deadline",
+   "advice": "Scammers rush you so you don't stop to check. Pause and verify through an official channel.",
+   "patterns": [
+    "\\b(urgent(ly)?|immediately|right now|act now|asap|without delay|today itself|turant|abhi ke abhi)\\b",
+    "\\bwithin (the next )?\\d{1,3} ?(min(ute)?s?|hours?|hrs?)\\b",
+    "\\b(last|final) (chance|warning|reminder|notice|date)\\b",
+    "\\b(expires?|expiring|valid) (today|tonight|soon|in \\d+)"
+   ]
+  },
+  {
+   "code": "account_threat",
+   "family": "pressure",
+   "weight": 20,
+   "label": "Threatens to block, suspend or disconnect an account or service",
+   "advice": "Threats of immediate suspension are a classic pressure tactic. Check your account by opening the official app yourself.",
+   "patterns": [
+    "\\b(account|a/c|card|sim|number|kyc|pan|wallet|connection|electricity|power|service|id)\\b[^.\\n]{0,30}\\b(will be|has been|is being|is|are|get|gets)\\s+(temporarily |permanently )?(blocked|suspended|deactivated|closed|disconnected|frozen|terminated|cut|disabled|restricted|expired)",
+    "\\b(disconnect(ed|ion)?|block(ed)?|suspend(ed)?)\\b[^.\\n]{0,20}\\b(tonight|today|in \\d+ ?(hours?|hrs?|mins?))"
+   ]
+  },
+  {
+   "code": "payment_request",
+   "family": "payment_fraud",
+   "weight": 20,
+   "label": "Requests a payment, fee or money transfer",
+   "advice": "Be wary of unexpected requests to pay fees, 'refundable' deposits, or to approve a UPI collect request.",
+   "patterns": [
+    "\\b(pay|transfer|send|deposit|remit)\\b[^.\\n]{0,25}(rs\\.?|₹|inr|rupees|money|amount|fee|charges?|payment)",
+    "\\b(processing|registration|clearance|release|delivery|verification|activation|customs) (fee|charges?)\\b",
+    "\\b(refundable (deposit|amount|fee)|gift ?cards?|bitcoin|usdt|crypto(currency)?)\\b",
+    "\\b(collect request|approve (the )?(upi )?(request|payment)|enter (your )?upi pin to receive|scan (the |this )?qr( code)? to (receive|get|claim))\\b"
+   ],
+   "negatable": true
+  },
+  {
+   "code": "impersonation",
+   "family": "impersonation",
+   "weight": 15,
+   "label": "Claims to be a bank, government body, courier or well-known company",
+   "advice": "Contact the organisation through its official app, website or the number printed on your card, not the one in the message.",
+   "patterns": [
+    "\\b(sbi|state bank|hdfc|icici|axis bank|kotak|pnb|bank of baroda|canara|yes bank|paytm|phonepe|google ?pay|gpay|bhim|npci|amazon|flipkart|rbi|reserve bank|income ?tax|it department|epfo|uidai|aadhaar (centre|department)|trai|dot|cbi|cyber ?cell|police|customs|fedex|dhl|blue ?dart|india ?post|delhivery|bescom|msedcl|tata power|adani electricity|netflix|whatsapp support|microsoft support|apple support)\\b[^\\n]{0,80}\\b(verify|update|kyc|block|suspend|refund|reward|click|link|confirm|deactivat|pending|failed|seized|parcel|bill)",
+    "\\bdear (customer|user|member|valued customer|account holder|sir/madam)\\b"
+   ]
+  },
+  {
+   "code": "kyc_update",
+   "family": "phishing",
+   "weight": 20,
+   "label": "Pushes an urgent KYC / PAN / Aadhaar update",
+   "advice": "KYC updates are done in-branch or inside the official app, never through a link in an SMS.",
+   "patterns": [
+    "\\bkyc\\b[^.\\n]{0,25}\\b(update|expired?|pending|verif(y|ication)|incomplete|suspend)",
+    "\\b(update|link|verify)\\b[^.\\n]{0,15}\\b(kyc|pan( card)?|aadhaar)\\b"
+   ]
+  },
+  {
+   "code": "prize_lure",
+   "family": "lottery",
+   "weight": 15,
+   "label": "Promises a prize, lottery, cashback or reward",
+   "advice": "You cannot win a lottery you never entered. Unexpected rewards are bait.",
+   "patterns": [
+    "\\b(you (have )?won|winner|congratulations?|lottery|lucky draw|jackpot|kbc|bumper prize|claim (your )?(prize|reward|gift|cashback)|reward points? (expir|redeem))",
+    "\\b(free (gift|iphone|recharge)|cashback of)\\b"
+   ]
+  },
+  {
+   "code": "legal_threat",
+   "family": "legal_threat",
+   "weight": 25,
+   "label": "Uses police, court or 'digital arrest' threats",
+   "advice": "Indian police and agencies do not conduct 'digital arrests' over video calls or demand payment to close a case. Call 1930.",
+   "patterns": [
+    "\\b(digital arrest|arrest warrant|legal action|police case|fir (has been|is) (filed|registered)|court notice|money laundering|narcotics|drugs (were )?found|parcel (has been )?seized|non-?bailable)\\b"
+   ]
+  },
+  {
+   "code": "remote_access",
+   "family": "malware",
+   "weight": 30,
+   "label": "Asks you to install an app or share your screen",
+   "advice": "Screen-sharing and unknown APKs give scammers control of your phone. Only install apps from the Play Store.",
+   "patterns": [
+    "\\b(anydesk|teamviewer|quick ?support|rustdesk|airdroid|screen ?shar(e|ing))\\b",
+    "\\b(install|download)\\b[^.\\n]{0,25}\\b(apk|this app|the app|application from (this|the) link)\\b"
+   ],
+   "negatable": true
+  },
+  {
+   "code": "job_scam",
+   "family": "job_scam",
+   "weight": 25,
+   "label": "Offers easy money, part-time tasks or work-from-home earnings",
+   "advice": "'Like videos and earn' and task-based jobs usually end with you paying a deposit you never get back.",
+   "patterns": [
+    "\\b(part[- ]?time (job|work)|work from home)\\b[^\\n]{0,40}\\b(earn|salary|income|daily|per day)",
+    "\\bearn (up to )?(rs\\.?|₹)? ?\\d[\\d,]* ?(per|a|/) ?(day|hour|task)\\b",
+    "\\b(like|subscribe to|rate) (youtube )?(videos|channels|hotels|products)[^\\n]{0,30}\\b(earn|paid|commission)"
+   ]
+  },
+  {
+   "code": "secrecy",
+   "family": "pressure",
+   "weight": 15,
+   "label": "Tells you to keep it secret from family or your bank",
+   "advice": "Being told not to tell anyone is a strong sign of a scam. Talk to someone you trust.",
+   "patterns": [
+    "\\b(don'?t|do not|never) (tell|inform|discuss (this )?with|share (this )?with) (anyone|anybody|your family|family|your bank|bank staff|police)\\b",
+    "\\bkeep (this|it) (confidential|secret|between us)\\b"
+   ]
+  },
+  {
+   "code": "hinglish_otp_request",
+   "family": "credential_theft",
+   "weight": 40,
+   "label": "Asks for an OTP or PIN in Hindi/Hinglish",
+   "advice": "Bank staff and legitimate support teams should never ask you to share an OTP, UPI PIN, CVV or password. Never share it.",
+   "patterns": [
+    "\\b(otp|upi ?pin|atm ?pin|cvv|password)\\b[^.\\n]{0,45}\\b(bhejo|bhej do|batao|bataiye|share karo|de do|forward karo|bol do)\\b",
+    "\\b(otp|pin|password)\\b[^.\\n]{0,35}\\b(mujhe|mere ko|mere paas)\\b[^.\\n]{0,20}\\b(bhejo|batao|send karo)\\b"
+   ]
+  },
+  {
+   "code": "hinglish_urgency",
+   "family": "pressure",
+   "weight": 15,
+   "label": "Uses urgent Hindi/Hinglish pressure language",
+   "advice": "Scammers create panic to stop you checking. Pause and verify through the official app or phone number.",
+   "patterns": [
+    "\\b(abhi ke abhi|turant|jaldi karo|der mat karo|aaj hi|warna account band|account band ho jayega|sim band ho jayega)\\b"
+   ]
+  },
+  {
+   "code": "hinglish_payment_pressure",
+   "family": "payment_fraud",
+   "weight": 25,
+   "label": "Pressures you to send money in Hindi/Hinglish",
+   "advice": "Do not transfer money to unlock a job, prize, parcel or account. Verify independently first.",
+   "patterns": [
+    "\\b(paise bhejo|payment karo|paisa transfer karo|upi karo|fee jama karo|refundable deposit|pehle paise do)\\b"
+   ]
+  }
+ ],
+ "auth_code": {
+  "code": "auth_code_present",
+  "family": "auth_code_exposure",
+  "weight": 15,
+  "min_score": 35,
+  "label": "Message contains what looks like an OTP / authentication code (redacted)",
+  "advice": "Never forward or read out this code to anyone, including someone claiming to be from your bank. SCAMWISE removed it before sending anything to the server.",
+  "keywords": "(otp|one[- ]?time (password|passcode|code|pin)|verification code|security code|auth(entication)? code|login code|confirmation code|passcode|2fa code|code is|pin is|m-?pin|upi ?pin)",
+  "exclude_before": "(pin ?code|pincode|postal code|zip code|promo code|coupon code|order( no| number| id)?|ref(erence)?( no)?|a/c|account( no)?|ending|xx+)"
+ },
+ "url_rules": {
+  "shorteners": [
+   "bit.ly",
+   "tinyurl.com",
+   "t.co",
+   "goo.gl",
+   "is.gd",
+   "cutt.ly",
+   "rb.gy",
+   "shorturl.at",
+   "ow.ly",
+   "tiny.cc",
+   "rebrand.ly",
+   "s.id",
+   "t.ly",
+   "v.gd",
+   "shrtco.de",
+   "bitly.com",
+   "short.io",
+   "lnkd.in"
+  ],
+  "suspicious_tlds": [
+   "xyz",
+   "top",
+   "tk",
+   "ml",
+   "ga",
+   "cf",
+   "gq",
+   "click",
+   "link",
+   "zip",
+   "mov",
+   "icu",
+   "buzz",
+   "rest",
+   "cam",
+   "monster",
+   "sbs",
+   "cfd",
+   "lol",
+   "quest",
+   "support",
+   "live",
+   "online",
+   "site",
+   "website",
+   "win",
+   "bid",
+   "loan",
+   "work",
+   "shop",
+   "vip",
+   "fun",
+   "pw",
+   "cc",
+   "su"
+  ],
+  "brands": [
+   "sbi",
+   "onlinesbi",
+   "hdfc",
+   "hdfcbank",
+   "icici",
+   "icicibank",
+   "axis",
+   "axisbank",
+   "kotak",
+   "pnb",
+   "paytm",
+   "phonepe",
+   "gpay",
+   "googlepay",
+   "amazon",
+   "flipkart",
+   "netflix",
+   "whatsapp",
+   "microsoft",
+   "apple",
+   "icloud",
+   "paypal",
+   "uidai",
+   "aadhaar",
+   "incometax",
+   "epfo",
+   "indiapost",
+   "fedex",
+   "dhl",
+   "bluedart",
+   "airtel",
+   "jio",
+   "bsnl",
+   "irctc",
+   "npci",
+   "rbi",
+   "bescom",
+   "nsdl",
+   "digilocker",
+   "gov"
+  ],
+  "official_domains": [
+   "sbi.co.in",
+   "onlinesbi.sbi",
+   "onlinesbi.com",
+   "sbi.bank.in",
+   "hdfcbank.com",
+   "hdfc.bank.in",
+   "icicibank.com",
+   "icici.bank.in",
+   "axisbank.com",
+   "axis.bank.in",
+   "kotak.com",
+   "kotak.bank.in",
+   "pnbindia.in",
+   "paytm.com",
+   "phonepe.com",
+   "pay.google.com",
+   "google.com",
+   "amazon.in",
+   "amazon.com",
+   "flipkart.com",
+   "netflix.com",
+   "whatsapp.com",
+   "wa.me",
+   "microsoft.com",
+   "apple.com",
+   "icloud.com",
+   "paypal.com",
+   "uidai.gov.in",
+   "myaadhaar.uidai.gov.in",
+   "incometax.gov.in",
+   "epfindia.gov.in",
+   "indiapost.gov.in",
+   "fedex.com",
+   "dhl.com",
+   "bluedart.com",
+   "airtel.in",
+   "jio.com",
+   "bsnl.co.in",
+   "irctc.co.in",
+   "npci.org.in",
+   "rbi.org.in",
+   "bescom.co.in",
+   "nsdl.co.in",
+   "digilocker.gov.in",
+   "india.gov.in",
+   "gov.in",
+   "nic.in"
+  ],
+  "multi_part_suffixes": [
+   "co.in",
+   "gov.in",
+   "org.in",
+   "net.in",
+   "ac.in",
+   "edu.in",
+   "res.in",
+   "nic.in",
+   "bank.in",
+   "co.uk",
+   "org.uk",
+   "ac.uk",
+   "gov.uk",
+   "com.au",
+   "co.jp",
+   "com.br"
+  ],
+  "sensitive_path": "(login|log-in|signin|sign-in|verify|verification|update|secure|security|kyc|account|banking|wallet|reward|claim|refund|unlock|suspend|confirm|otp|pan|aadhaar|webscr|auth)",
+  "weights": {
+   "url_ip_host": 25,
+   "url_punycode": 25,
+   "url_at_symbol": 20,
+   "url_shortener": 10,
+   "url_suspicious_tld": 15,
+   "url_brand_mismatch": 30,
+   "url_many_subdomains": 10,
+   "url_http_only": 10,
+   "url_sensitive_path": 10,
+   "url_apk": 30,
+   "url_long": 5,
+   "url_hyphenated_domain": 10,
+   "url_odd_port": 10,
+   "known_malicious_url": 60
+  }
+ },
+ "families": {
+  "phishing": "Phishing / credential theft",
+  "payment_fraud": "Payment fraud",
+  "impersonation": "Impersonation",
+  "pressure": "Social-engineering pressure",
+  "lottery": "Prize / lottery scam",
+  "legal_threat": "Fake legal threat / digital arrest",
+  "malware": "Malware or remote-access risk",
+  "job_scam": "Job / task scam",
+  "auth_code_exposure": "Authentication-code exposure",
+  "known_threat": "Known malicious link",
+  "suspicious_link": "Suspicious link",
+  "none": "No scam pattern detected"
+ },
+ "negation_window": "(do not|don'?t|never|not|no need to|nobody will|will never|won'?t)[ ]+([a-z']+[ ]+){0,2}$"
+}

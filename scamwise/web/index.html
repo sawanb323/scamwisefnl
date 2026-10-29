@@ -1,0 +1,248 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>SCAMWISE</title>
+<meta name="description" content="SCAMWISE checks suspicious messages and links in seconds, explains the risk in plain language, and alerts your family's devices. Built for India.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app/app.css">
+<link rel="stylesheet" href="assets/landing.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230E1116'/%3E%3Cpath d='M12 5 7 7v4c0 3.1 2.1 5.9 5 6.7 2.9-.8 5-3.6 5-6.7V7Z' fill='none' stroke='%236E8BFF' stroke-width='2'/%3E%3C/svg%3E">
+</head>
+<body class="lp">
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="l-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.4 3 8.4 7 9.5 4-1.1 7-5.1 7-9.5V6Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="l-scan" viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></symbol>
+    <symbol id="l-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="l-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></symbol>
+    <symbol id="l-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></symbol>
+    <symbol id="l-eye-off" viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6.5 0 10 7 10 7a17 17 0 0 1-3.2 4.1M6.6 6.6C3.8 8.4 2 12 2 12s3.5 7 10 7c1.8 0 3.3-.5 4.6-1.3"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></symbol>
+    <symbol id="l-devices" viewBox="0 0 24 24"><rect x="2" y="4" width="14" height="10" rx="2"/><path d="M6 18h6"/><rect x="17" y="8" width="5" height="12" rx="1.5"/></symbol>
+    <symbol id="l-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="l-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="l-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="l-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+    <symbol id="l-family" viewBox="0 0 24 24"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20a6 6 0 0 1 12 0M14 20a4 4 0 0 1 8 0"/></symbol>
+    <symbol id="l-store" viewBox="0 0 24 24"><path d="M3 9 5 4h14l2 5M3 9h18v2a3 3 0 0 1-6 0 3 3 0 0 1-6 0 3 3 0 0 1-6 0V9ZM5 13v7h14v-7"/></symbol>
+    <symbol id="l-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  </defs>
+</svg>
+
+<!-- ======================= nav ======================= -->
+<header class="lp-nav" id="lp-nav">
+  <div class="lp-wrap lp-nav-in">
+    <a class="logo light" href="#top" id="lp-logo"><span class="logo-mark"><svg><use href="#l-shield"/></svg></span>SCAMWISE</a>
+    <nav class="lp-links" id="lp-links" aria-label="Sections">
+      <a href="#product">Product</a><a href="#how">How it works</a><a href="#security">Security</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+    </nav>
+    <div class="lp-actions" id="lp-actions">
+      <a class="lp-signin" href="app/#signin" data-auth="out">Sign in</a>
+      <a class="btn primary sm" href="app/#signup" data-auth="out">Get started</a>
+      <a class="btn primary sm hidden" href="app/" data-auth="in">Open dashboard<svg><use href="#l-arrow"/></svg></a>
+      <button class="lp-burger" id="lp-burger" type="button" aria-label="Open menu" aria-expanded="false"><svg><use href="#l-menu"/></svg></button>
+    </div>
+  </div>
+</header>
+
+<!-- ======================= hero ======================= -->
+<section class="lp-hero" id="top">
+  <div class="lp-wrap lp-hero-in">
+    <div class="lp-hero-copy">
+      <p class="kicker">Scam &amp; phishing protection for India</p>
+      <h1>Every suspicious message, checked <span class="lp-hl">in seconds.</span></h1>
+      <p class="lp-lede">Paste an SMS, WhatsApp message, email or link. SCAMWISE scores it, explains every warning sign in plain language, and alerts your family's devices when something is dangerous.</p>
+      <div class="lp-ctas">
+        <a class="btn primary lg" href="app/#signup" data-auth="out">Create free account<svg><use href="#l-arrow"/></svg></a>
+        <a class="btn primary lg hidden" href="app/" data-auth="in">Open dashboard<svg><use href="#l-arrow"/></svg></a>
+        <a class="btn lp-ghost lg" href="#check">Try it now</a>
+      </div>
+      <ul class="lp-trust">
+        <li><svg><use href="#l-check"/></svg>Nothing to install</li>
+        <li><svg><use href="#l-check"/></svg>OTPs never leave your device</li>
+        <li><svg><use href="#l-check"/></svg>Free for individuals</li>
+      </ul>
+    </div>
+
+    <!-- live checker -->
+    <div class="lp-checker" id="check" aria-label="Live message checker">
+      <div class="lp-ck-head">
+        <span class="lp-dots"><i></i><i></i><i></i></span>
+        <span class="mono">Live check · runs in your browser</span>
+      </div>
+      <div class="lp-ck-body">
+        <label for="lp-msg" class="lp-ck-label">Message</label>
+        <textarea id="lp-msg" rows="4" maxlength="2000" spellcheck="false" placeholder="Paste a suspicious message…"></textarea>
+        <div class="lp-ck-samples" id="lp-samples"></div>
+        <div class="lp-ck-result" id="lp-result" aria-live="polite">
+          <div class="lp-gauge"><svg viewBox="0 0 64 64"><circle class="t" cx="32" cy="32" r="27"/><circle class="f" id="lp-gauge-f" cx="32" cy="32" r="27"/></svg><b id="lp-score">0</b></div>
+          <div class="lp-ck-verdict"><span class="risk inconclusive" id="lp-risk">Waiting</span><p id="lp-cat">Type or pick an example</p></div>
+        </div>
+        <ul class="lp-ck-inds" id="lp-inds"></ul>
+        <p class="lp-ck-redact" id="lp-redact"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= stats ======================= -->
+<section class="lp-stats">
+  <div class="lp-wrap">
+    <p class="lp-stats-lead">Scams move faster than people can check them.</p>
+    <div class="lp-stat-row">
+      <div class="lp-stat"><b data-count="22845" data-prefix="₹" data-suffix=" cr">₹22,845 cr</b><span>lost to cyber fraud in India in 2024</span><small>MHA reply to the Lok Sabha, via <a href="https://www.angelone.in/news/market-updates/cyber-fraud-costs-indians-22-845-crore-in-2024-government" target="_blank" rel="noopener">Angel One News</a></small></div>
+      <div class="lp-stat"><b data-count="3637" data-scale="0.01" data-decimals="2" data-suffix=" lakh">36.37 lakh</b><span>cyber-fraud complaints in 2024, up from 24.42 lakh in 2023</span><small>Same source</small></div>
+      <div class="lp-stat"><b>≈ ₹19,800 cr</b><span>lost in 2025, from I4C portal data</span><small>I4C / NCRP data via <a href="https://ianslive.in/indians-lose-over-rs-52976-crore-to-cyber-frauds-over-six-years-report--20260103154943" target="_blank" rel="noopener">IANS, Jan 2026</a></small></div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= product ======================= -->
+<section class="lp-sec" id="product">
+  <div class="lp-wrap">
+    <div class="lp-sec-head">
+      <p class="lp-eyebrow">Product</p>
+      <h2>Built around how scams actually work</h2>
+      <p>Fake KYC updates, “digital arrests”, parcel and electricity-bill scams, task jobs and OTP theft all rely on pressure. SCAMWISE spots the pressure and shows you exactly where it is.</p>
+    </div>
+    <div class="lp-features">
+      <article class="lp-feat lp-reveal"><span class="lp-ico"><svg><use href="#l-scan"/></svg></span><h3>Transparent risk score</h3><p>High, medium, low or inconclusive, with every point of the score tied to a named warning sign: urgency, OTP requests, payment demands, impersonation, link tricks.</p></article>
+      <article class="lp-feat lp-reveal"><span class="lp-ico"><svg><use href="#l-lock"/></svg></span><h3>Codes stay on your device</h3><p>OTPs, card numbers, passwords and Aadhaar-style numbers are removed in your browser before anything is sent. Linked devices only learn a code was present.</p></article>
+      <article class="lp-feat lp-reveal"><span class="lp-ico"><svg><use href="#l-bell"/></svg></span><h3>Family alerts in real time</h3><p>Link a parent's phone or your laptop. When one device checks something high-risk, the others are alerted within seconds.</p></article>
+      <article class="lp-feat lp-reveal"><span class="lp-ico"><svg><use href="#l-link"/></svg></span><h3>Link checks without clicking</h3><p>Look-alike domains, shorteners, raw IP addresses and .apk downloads are flagged, and links are checked against the URLhaus malware database. SCAMWISE never opens them.</p></article>
+      <article class="lp-feat lp-reveal"><span class="lp-ico"><svg><use href="#l-eye-off"/></svg></span><h3>Only what you paste</h3><p>No app permissions and no access to your inbox. SCAMWISE sees the text you choose to check and nothing else.</p></article>
+      <article class="lp-feat lp-reveal"><span class="lp-ico"><svg><use href="#l-devices"/></svg></span><h3>Approved devices only</h3><p>A new device needs a single-use code and approval from a device you already use. Unlink any device instantly from anywhere.</p></article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= how ======================= -->
+<section class="lp-sec lp-alt" id="how">
+  <div class="lp-wrap">
+    <div class="lp-sec-head">
+      <p class="lp-eyebrow">How it works</p>
+      <h2>From suspicious message to a clear next step</h2>
+    </div>
+    <ol class="lp-steps">
+      <li class="lp-reveal"><span class="mono">01</span><h3>Paste</h3><p>Copy the message from WhatsApp, Messages or Gmail and paste it into SCAMWISE.</p></li>
+      <li class="lp-reveal"><span class="mono">02</span><h3>Redact</h3><p>Codes, card numbers and passwords are removed in your browser before anything is sent.</p></li>
+      <li class="lp-reveal"><span class="mono">03</span><h3>Analyze</h3><p>Transparent rules score the message and links are checked against threat intelligence.</p></li>
+      <li class="lp-reveal"><span class="mono">04</span><h3>Act &amp; alert</h3><p>You see what to do next. Your linked devices are alerted if the risk is high or a code was exposed.</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- ======================= audiences ======================= -->
+<section class="lp-sec">
+  <div class="lp-wrap lp-two">
+    <article class="lp-aud lp-reveal">
+      <span class="lp-ico"><svg><use href="#l-family"/></svg></span>
+      <h3>For individuals &amp; families</h3>
+      <p>Check a strange SMS before you tap. Link your parents' phones so you hear about a high-risk message the moment they check it, without ever seeing their private messages.</p>
+      <ul class="lp-ticks"><li>Free unlimited checks</li><li>Alerts across up to 5 devices</li><li>30-day history</li></ul>
+    </article>
+    <article class="lp-aud lp-reveal">
+      <span class="lp-ico"><svg><use href="#l-store"/></svg></span>
+      <h3>For small businesses</h3>
+      <p>Shop owners and small teams are targeted with fake supplier payments, GST notices and UPI “collect” requests. Staff check messages in seconds; owners see team-wide trends without reading anyone's messages.</p>
+      <ul class="lp-ticks"><li>Team admin dashboard</li><li>Incident trends &amp; audit log</li><li>Custom retention</li></ul>
+    </article>
+  </div>
+</section>
+
+<!-- ======================= security ======================= -->
+<section class="lp-sec lp-dark" id="security">
+  <div class="lp-wrap">
+    <div class="lp-sec-head">
+      <p class="lp-eyebrow">Privacy &amp; security</p>
+      <h2>Designed to hold as little as possible</h2>
+      <p>Every request is checked by the database itself with row-level security. Each device is bound to its own sign-in session, and unlinking a device ends that session on the server immediately.</p>
+    </div>
+    <div class="lp-two">
+      <div class="lp-list-card lp-reveal">
+        <h3>What we store</h3>
+        <ul class="lp-ticks"><li>Risk level and score</li><li>Warning types and link domains</li><li>Time and the name of the device that checked it</li><li>Deleted automatically after 7, 30 or 90 days, your choice</li></ul>
+      </div>
+      <div class="lp-list-card lp-reveal">
+        <h3>What we never store</h3>
+        <ul class="lp-crosses"><li>The message itself (unless you opt in to a short masked excerpt)</li><li>Any OTP, PIN, card number or password</li><li>Your contacts or other apps' data</li><li>Anything you didn't paste</li></ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= pricing ======================= -->
+<section class="lp-sec" id="pricing">
+  <div class="lp-wrap">
+    <div class="lp-sec-head">
+      <p class="lp-eyebrow">Pricing</p>
+      <h2>Free for individuals. Affordable for teams.</h2>
+      <p>Proposed plans for this prototype. No payments are taken today.</p>
+    </div>
+    <div class="lp-prices">
+      <article class="lp-price lp-reveal"><h3>Free</h3><p class="lp-amt">₹0</p><p class="muted">For anyone checking their own messages.</p>
+        <ul class="lp-ticks"><li>Unlimited message &amp; link checks</li><li>2 linked devices</li><li>30-day history</li><li>Code redaction &amp; alerts</li></ul>
+        <a class="btn ghost block" href="app/#signup">Get started</a></article>
+      <article class="lp-price featured lp-reveal"><span class="tag accent">Most popular</span><h3>Family</h3><p class="lp-amt">₹49<small>/month</small></p><p class="muted">Protect parents and relatives.</p>
+        <ul class="lp-ticks"><li>Up to 5 linked devices</li><li>90-day history</li><li>Priority threat-intelligence checks</li><li>Alerts for medium-risk scans</li></ul>
+        <a class="btn primary block" href="app/#signup">Start with Family</a></article>
+      <article class="lp-price lp-reveal"><h3>Business</h3><p class="lp-amt">₹149<small>/user/month</small></p><p class="muted">For shops and small teams.</p>
+        <ul class="lp-ticks"><li>Team admin dashboard</li><li>Incident trends &amp; audit log</li><li>Custom retention policy</li><li>Onboarding &amp; awareness training</li></ul>
+        <a class="btn ghost block" href="#contact">Talk to us</a></article>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= faq ======================= -->
+<section class="lp-sec lp-alt" id="faq">
+  <div class="lp-wrap lp-faq-wrap">
+    <div class="lp-sec-head left">
+      <p class="lp-eyebrow">FAQ</p>
+      <h2>Questions</h2>
+      <p>Still unsure? <a href="#contact">Send us a message</a>.</p>
+    </div>
+    <div class="lp-faq">
+      <details><summary>Can SCAMWISE read my SMS or WhatsApp?<svg><use href="#l-plus"/></svg></summary><p>No. A website cannot read your messages or other apps. SCAMWISE only sees the text you choose to paste into it.</p></details>
+      <details><summary>If SCAMWISE says “Low risk”, is the message safe?<svg><use href="#l-plus"/></svg></summary><p>Not necessarily. Low means no strong scam pattern was found. New scams appear every day, so always verify payment or account requests through the official app or number.</p></details>
+      <details><summary>What does “Inconclusive” mean?<svg><use href="#l-plus"/></svg></summary><p>There wasn't enough evidence either way, for example a bare link that could not be checked against threat intelligence. Treat it with caution.</p></details>
+      <details><summary>What happens to an OTP in a message I check?<svg><use href="#l-plus"/></svg></summary><p>It is replaced with [REDACTED] in your browser before anything is sent. Your linked devices get an alert saying a code was exposed, never the code itself.</p></details>
+      <details><summary>Does it work on iPhone and laptops?<svg><use href="#l-plus"/></svg></summary><p>Yes. SCAMWISE runs in any modern browser on iPhone, Android, Windows and Mac. There is nothing to install.</p></details>
+      <details><summary>I already lost money. What should I do?<svg><use href="#l-plus"/></svg></summary><p>Call your bank immediately, then call the national cyber-crime helpline <b>1930</b> or report at <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a>. Speed matters for freezing funds.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= cta + contact ======================= -->
+<section class="lp-sec" id="contact">
+  <div class="lp-wrap">
+    <div class="lp-cta">
+      <div>
+        <h2>Check your next suspicious message before you reply.</h2>
+        <p>Create a free account in under a minute.</p>
+        <div class="lp-ctas"><a class="btn primary lg" href="app/#signup">Create free account<svg><use href="#l-arrow"/></svg></a><a class="btn lp-ghost lg" href="app/#signin">Sign in</a></div>
+      </div>
+      <form id="lp-contact" class="lp-contact" novalidate>
+        <h3>Feedback or a business demo?</h3>
+        <div class="lp-row2"><input id="lp-c-name" name="name" placeholder="Name" maxlength="80" aria-label="Name"><input id="lp-c-email" name="email" type="email" placeholder="Email (optional)" maxlength="120" aria-label="Email"></div>
+        <select id="lp-c-kind" name="kind" aria-label="Topic"><option value="feedback">General feedback</option><option value="demo">Request a demo</option><option value="business">Business plan enquiry</option><option value="other">Other</option></select>
+        <textarea id="lp-c-msg" name="message" rows="3" placeholder="Your message" maxlength="2000" aria-label="Message"></textarea>
+        <div class="lp-row-end"><p class="fine" id="lp-c-status">Don't include OTPs, passwords or bank details.</p><button class="btn primary" type="submit">Send</button></div>
+      </form>
+    </div>
+  </div>
+</section>
+
+<footer class="lp-foot">
+  <div class="lp-wrap lp-foot-in">
+    <div><a class="logo light" href="#top"><span class="logo-mark"><svg><use href="#l-shield"/></svg></span>SCAMWISE</a><p>Detect. Understand. Act.<br>Academic Digital Business Strategy prototype, 2026.</p></div>
+    <div class="lp-foot-links"><a href="#product">Product</a><a href="#pricing">Pricing</a><a href="#security">Security</a><a href="app/#signin">Sign in</a><a href="admin/">Admin</a></div>
+    <div class="lp-help"><b>Lost money to a scam?</b><span>Call your bank, then <b>1930</b> or report at <a href="https://cybercrime.gov.in" target="_blank" rel="noopener">cybercrime.gov.in</a></span></div>
+  </div>
+</footer>
+
+<div class="toasts" id="toasts" aria-live="polite"></div>
+<script type="module" src="assets/site.js"></script>
+</body>
+</html>

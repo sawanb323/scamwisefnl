@@ -1,0 +1,2 @@
+{ "name": "scamwise-e2e-local", "private": true, "type": "module",
+  "dependencies": { "pg": "8.13.1", "chart.js": "4.4.1", "playwright": "1.49.1" } }

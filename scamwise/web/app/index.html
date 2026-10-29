@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>SCAMWISE</title>
+<meta name="description" content="Check suspicious messages and links, see your scan history, get alerts from your other devices.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230E1116'/%3E%3Cpath d='M12 5 7 7v4c0 3.1 2.1 5.9 5 6.7 2.9-.8 5-3.6 5-6.7V7Z' fill='none' stroke='%236E8BFF' stroke-width='2'/%3E%3C/svg%3E">
+</head>
+<body>
+<!-- icon sprite -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-shield" viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.4 3 8.4 7 9.5 4-1.1 7-5.1 7-9.5V6Z"/><path d="m9 12 2 2 4-4"/></symbol>
+    <symbol id="i-scan" viewBox="0 0 24 24"><path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2"/><path d="M7 12h10"/></symbol>
+    <symbol id="i-history" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></symbol>
+    <symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 8a6 6 0 1 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></symbol>
+    <symbol id="i-devices" viewBox="0 0 24 24"><rect x="2" y="4" width="14" height="10" rx="2"/><path d="M6 18h6"/><rect x="17" y="8" width="5" height="12" rx="1.5"/></symbol>
+    <symbol id="i-settings" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></symbol>
+    <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 24 24"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></symbol>
+    <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></symbol>
+    <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></symbol>
+    <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></symbol>
+    <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+    <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></symbol>
+    <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+    <symbol id="i-mail" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+    <symbol id="i-sparkle" viewBox="0 0 24 24"><path d="M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M6 18l2.5-2.5M15.5 8.5 18 6"/></symbol>
+  </defs>
+</svg>
+
+<!-- ======================= loading ======================= -->
+<div id="view-loading" class="center-screen"><div class="spinner" aria-label="Loading"></div></div>
+
+<!-- ======================= auth layout (login / otp / pending share it) ======================= -->
+<div class="auth-layout" id="auth-layout">
+  <aside class="auth-brand">
+    <a class="logo light" href="../" id="auth-logo"><span class="logo-mark"><svg><use href="#i-shield"/></svg></span>SCAMWISE</a>
+    <div class="auth-pitch">
+      <p class="kicker">Scam &amp; phishing protection</p>
+      <h1 id="pitch-h">Know if a message is a scam before you act on it.</h1>
+      <p class="lede">Paste any SMS, WhatsApp message, email or link. Get a scored, explained verdict in seconds, and alert your family's devices automatically.</p>
+      <div class="pitch-card" id="pitch-card" aria-hidden="true">
+        <div class="pc-top"><span class="risk high" id="pc-risk">High risk</span><span class="pc-score"><span id="pc-score">92</span><small>/100</small></span></div>
+        <p class="pc-msg" id="pc-msg">“Your SBI account will be blocked today. Update KYC at sbi-kyc-update[.]xyz”</p>
+        <ul class="pc-list" id="pc-list"><li><b>+30</b>Brand name on an unofficial domain</li><li><b>+20</b>Threatens to block your account</li><li><b>+20</b>Urgent KYC update demand</li></ul>
+        <div class="pc-dots" id="pc-dots"><i class="on"></i><i></i><i></i></div>
+      </div>
+    </div>
+    <div class="auth-foot"><span><svg><use href="#i-lock"/></svg>OTPs and card numbers are removed on your device</span><span><svg><use href="#i-devices"/></svg>Alerts across up to 5 devices</span></div>
+  </aside>
+
+  <main class="auth-main">
+    <!-- sign in -->
+    <section id="view-login" class="auth-card hidden" aria-labelledby="login-h">
+      <a class="logo mobile-logo" href="../"><span class="logo-mark"><svg><use href="#i-shield"/></svg></span>SCAMWISE</a>
+      <h2 id="login-h">Welcome back</h2>
+      <p class="muted">Sign in to check messages and see alerts from your devices.</p>
+      <div class="notice hidden" id="login-notice"></div>
+      <form id="login-form" class="form" novalidate>
+        <label class="field-label" for="login-email">Email</label>
+        <input id="login-email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <div class="label-row"><label class="field-label" for="login-password">Password</label><button type="button" class="link-btn" id="to-forgot">Forgot password?</button></div>
+        <div class="pw-wrap"><input id="login-password" type="password" autocomplete="current-password" placeholder="Your password" required><button type="button" class="pw-toggle" data-pw="login-password" aria-label="Show password"><svg><use href="#i-eye"/></svg></button></div>
+        <p class="err" id="login-error" role="alert"></p>
+        <button class="btn primary block" type="submit" id="login-submit">Sign in</button>
+      </form>
+      <p class="switch-line">New to SCAMWISE? <button type="button" class="link-btn" id="to-signup">Create an account</button></p>
+      <p class="fine center" id="login-alt">Only need a quick check? <a href="../#check">Try the checker without an account</a></p>
+    </section>
+
+    <!-- sign up -->
+    <section id="view-signup" class="auth-card hidden" aria-labelledby="signup-h">
+      <a class="logo mobile-logo" href="../"><span class="logo-mark"><svg><use href="#i-shield"/></svg></span>SCAMWISE</a>
+      <h2 id="signup-h">Create your account</h2>
+      <p class="muted">Free for individuals. No card needed.</p>
+      <form id="signup-form" class="form" novalidate>
+        <label class="field-label" for="signup-name">Full name</label>
+        <input id="signup-name" type="text" autocomplete="name" placeholder="Your name" maxlength="80">
+        <label class="field-label" for="signup-email">Email</label>
+        <input id="signup-email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <label class="field-label" for="signup-password">Password</label>
+        <div class="pw-wrap"><input id="signup-password" type="password" autocomplete="new-password" placeholder="At least 8 characters" minlength="8" required><button type="button" class="pw-toggle" data-pw="signup-password" aria-label="Show password"><svg><use href="#i-eye"/></svg></button></div>
+        <div class="meter" id="pw-meter" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+        <p class="fine" id="pw-hint">Use 8 or more characters with a mix of letters, numbers and symbols.</p>
+        <label class="check"><input type="checkbox" id="signup-terms"><span>I agree to the <a href="../#privacy">privacy terms</a>. SCAMWISE never stores the messages I check.</span></label>
+        <p class="err" id="signup-error" role="alert"></p>
+        <button class="btn primary block" type="submit" id="signup-submit">Create account</button>
+      </form>
+      <p class="switch-line">Already have an account? <button type="button" class="link-btn" id="to-login">Sign in</button></p>
+    </section>
+
+    <!-- check your inbox -->
+    <section id="view-verify" class="auth-card hidden" aria-labelledby="verify-h">
+      <span class="big-ico"><svg><use href="#i-mail"/></svg></span>
+      <h2 id="verify-h">Check your inbox</h2>
+      <p class="muted" id="verify-text">We sent a confirmation link to your email. Open it on this device to finish creating your account.</p>
+      <button class="btn ghost block" id="verify-back" type="button">Back to sign in</button>
+    </section>
+
+    <!-- forgot password -->
+    <section id="view-forgot" class="auth-card hidden" aria-labelledby="forgot-h">
+      <button class="back" id="forgot-back" type="button"><svg><use href="#i-arrow"/></svg>Back to sign in</button>
+      <h2 id="forgot-h">Reset your password</h2>
+      <p class="muted">Enter your account email and we'll send you a link to set a new password.</p>
+      <form id="forgot-form" class="form" novalidate>
+        <label class="field-label" for="forgot-email">Email</label>
+        <input id="forgot-email" type="email" autocomplete="email" placeholder="you@example.com" required>
+        <p class="err" id="forgot-error" role="alert"></p>
+        <button class="btn primary block" type="submit" id="forgot-submit">Send reset link</button>
+      </form>
+    </section>
+
+    <!-- set new password (after reset link) -->
+    <section id="view-reset" class="auth-card hidden" aria-labelledby="reset-h">
+      <h2 id="reset-h">Set a new password</h2>
+      <p class="muted">Choose a password you don't use anywhere else.</p>
+      <form id="reset-form" class="form" novalidate>
+        <label class="field-label" for="reset-password">New password</label>
+        <div class="pw-wrap"><input id="reset-password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters"><button type="button" class="pw-toggle" data-pw="reset-password" aria-label="Show password"><svg><use href="#i-eye"/></svg></button></div>
+        <p class="err" id="reset-error" role="alert"></p>
+        <button class="btn primary block" type="submit" id="reset-submit">Save password</button>
+      </form>
+    </section>
+
+    <!-- pending (link this device) -->
+    <section id="view-pending" class="auth-card hidden" aria-labelledby="pending-title">
+      <span class="status-chip warn"><i></i>Not linked yet</span>
+      <h2 id="pending-title">Link this device</h2>
+      <p class="muted" id="pending-sub"></p>
+      <div id="pending-enter">
+        <ol class="steps-list">
+          <li>On a device that's already signed in, open <b>Devices</b> and choose <b>Add device</b>.</li>
+          <li>Enter the 8-character code it shows, or scan its QR code.</li>
+        </ol>
+        <form id="pair-form" class="form">
+          <input id="pair-code" class="code-input" maxlength="9" placeholder="ABCD-EFGH" autocomplete="off" autocapitalize="characters" aria-label="Pairing code">
+          <p class="err" id="pair-error" role="alert"></p>
+          <button class="btn primary block" type="submit" id="pair-submit">Request access</button>
+        </form>
+      </div>
+      <div id="pending-wait" class="hidden">
+        <div class="waiting"><span class="pulse"></span><div><b>Waiting for approval</b><p class="muted">Approve <span id="pending-name"></span> on your other device. This page updates on its own.</p></div></div>
+        <button class="btn ghost block" id="pair-again" type="button">Use a different code</button>
+      </div>
+      <div class="split-actions">
+        <button class="btn ghost sm" id="pending-signout" type="button">Sign out</button>
+        <button class="btn danger-ghost sm" id="pending-remove" type="button">Remove this device</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- ======================= main app ======================= -->
+<div id="view-main" class="shell hidden">
+  <nav class="side" aria-label="Main">
+    <a class="logo app-home" href="#"><span class="logo-mark"><svg><use href="#i-shield"/></svg></span>SCAMWISE</a>
+    <div class="nav-group" role="tablist">
+      <button data-tab="scan" class="on"><svg><use href="#i-scan"/></svg><span>Scan</span></button>
+      <button data-tab="dashboard"><svg><use href="#i-shield"/></svg><span>Dashboard</span></button>
+      <button data-tab="history"><svg><use href="#i-history"/></svg><span>History</span></button>
+      <button data-tab="insights"><svg><use href="#i-history"/></svg><span>Insights</span></button>
+      <button data-tab="family"><svg><use href="#i-devices"/></svg><span>Family safety</span></button>
+      <button data-tab="alerts"><svg><use href="#i-bell"/></svg><span>Alerts</span><em class="badge hidden" id="alert-badge"></em></button>
+      <button data-tab="devices"><svg><use href="#i-devices"/></svg><span>Devices</span><em class="badge hidden" id="device-badge"></em></button>
+      <button data-tab="settings"><svg><use href="#i-settings"/></svg><span>Settings</span></button>
+    </div>
+    <div class="side-foot">
+      <div class="side-help"><b>Lost money to a scam?</b><span>Call your bank, then <b>1930</b> or report at cybercrime.gov.in</span></div>
+      <button class="side-signout" id="nav-signout" type="button"><svg><use href="#i-logout"/></svg><span>Sign out</span></button>
+    </div>
+  </nav>
+
+  <div class="content">
+    <header class="topbar">
+      <div class="tb-title">
+        <a class="logo mobile-only app-home" href="#" aria-label="SCAMWISE home"><span class="logo-mark"><svg><use href="#i-shield"/></svg></span></a>
+        <div><h1 id="page-title">Scan</h1><p id="page-sub" class="muted">Check a message or link</p></div>
+      </div>
+      <div class="tb-right">
+        <span class="sync" id="sync"><i></i><span id="sync-text">Connecting</span></span>
+        <button class="avatar" id="avatar" type="button" aria-label="Account settings" title="Account"></button>
+      </div>
+    </header>
+
+    <div class="page">
+      <div class="notice warn hidden" id="banner"></div>
+
+      <!-- scan -->
+      <section id="tab-scan" class="tab">
+        <div class="scan-grid">
+          <div class="panel composer">
+            <div class="composer-head">
+              <label for="msg" class="field-label">Message or link</label>
+              <span class="mono muted" id="charcount"></span>
+            </div>
+            <textarea id="msg" rows="9" maxlength="5000" placeholder="Paste the full message here, including any links. Codes, card numbers and passwords are removed before anything is sent."></textarea>
+            <div class="panel-head" style="margin-top:12px"><div><b>Scan a screenshot</b><p class="muted">OCR runs in your browser. The image itself is not uploaded.</p></div><label class="btn ghost sm" for="screenshot-file">Choose image</label><input id="screenshot-file" type="file" accept="image/png,image/jpeg,image/webp" hidden></div><p class="fine" id="ocr-status" aria-live="polite">PNG, JPG or WebP · up to 8 MB</p>
+            <div class="samples"><span class="muted">Try an example</span><div class="chips" id="samples"></div></div>
+            <div class="composer-foot">
+              <p class="redact" id="redactnote"></p>
+              <div class="row-end">
+                <button class="btn ghost" id="clear" type="button">Clear</button>
+                <button class="btn primary" id="analyse" type="button">Analyze <kbd>Ctrl ↵</kbd></button>
+              </div>
+            </div>
+          </div>
+          <div class="panel result" id="result" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <!-- dashboard: the signed-in customer's own data only (my_dashboard checks ownership server-side) -->
+      <section id="tab-dashboard" class="tab hidden">
+        <div class="notice warn hidden" id="dash-banner"></div>
+        <div class="stats" id="dash-stats"></div>
+        <div class="dash-grid">
+          <div class="panel"><div class="panel-head"><div><h3>Subscription</h3><p class="muted">Your plan, validity and device allowance</p></div><span id="dash-plan-tag"></span></div><dl class="kv" id="dash-plan"></dl></div>
+          <div class="panel"><div class="panel-head"><div><h3>Registered devices</h3><p class="muted">Devices linked to this account</p></div><button class="btn ghost sm" id="dash-devices" type="button">Manage</button></div><div id="dash-devices-list" class="rows"></div></div>
+        </div>
+        <div class="dash-grid">
+          <div class="panel"><div class="panel-head"><div><h3>Recent threats</h3><p class="muted">Detected on any of your devices</p></div><button class="btn ghost sm" id="dash-history" type="button">All scans</button></div><div id="dash-threats" class="rows"></div></div>
+          <div class="panel"><div class="panel-head"><div><h3>Recent security activity</h3><p class="muted">Sign-ins, device changes, plan changes and incident updates</p></div></div><div id="dash-activity" class="rows"></div></div>
+        </div>
+        <div class="panel" id="dash-org-panel" style="margin-top:16px" hidden><div class="panel-head"><div><h3 id="dash-org-title">Organisation</h3><p class="muted">Members' devices and threats in the last 30 days. Message content is never shared.</p></div></div><div id="dash-org" class="rows"></div></div>
+        <div class="panel" style="margin-top:16px"><div class="panel-head"><div><h3>Upgrade or renew</h3><p class="muted">Online payment is coming soon. Request a plan and the ScamWise team will contact you to activate it.</p></div></div><div id="dash-plans" class="plan-grid"></div><div id="dash-payments"></div></div>
+      </section>
+
+      <!-- history -->
+      <section id="tab-history" class="tab hidden">
+        <div class="stats" id="hist-stats"></div>
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>All scans</h3><p class="muted">From every linked device. Message text is never stored.</p></div>
+            <select id="hist-filter" class="select-sm" aria-label="Filter by risk"><option value="">All risk levels</option><option value="high">High</option><option value="medium">Medium</option><option value="low">Low</option><option value="inconclusive">Inconclusive</option></select>
+          </div>
+          <div id="history" class="rows"></div>
+        </div>
+      </section>
+
+      <!-- insights -->
+      <section id="tab-insights" class="tab hidden">
+        <div class="stats" id="insight-stats"></div>
+        <div class="panel"><div class="panel-head"><div><h3>Risk breakdown</h3><p class="muted">Based on your saved scan metadata only.</p></div><button class="btn ghost sm" id="export-report" type="button">Export privacy-safe report</button></div><div id="insight-bars" class="rows"></div></div>
+        <div class="panel" style="margin-top:16px"><h3>Privacy-safe incident report</h3><p class="muted" style="margin-top:6px">Exports risk level, category, timestamp and indicators. It does not export message text, passwords, OTPs, or account credentials.</p><p class="fine" id="report-status" style="margin-top:8px" aria-live="polite"></p></div>
+      </section>
+
+      <!-- family safety -->
+      <section id="tab-family" class="tab hidden">
+        <div class="panel"><div class="panel-head"><div><h3>Family safety centre</h3><p class="muted">A simple safety hub for family members and less-experienced internet users.</p></div><span class="tag accent">Prototype</span></div>
+          <div class="notice" style="margin-bottom:14px">Family sharing currently uses your existing approved linked devices on this account. Separate family accounts and cross-account sharing are not enabled.</div>
+          <div class="rows"><div class="row-item"><div><b>1. Never share OTPs or UPI PINs</b><p class="muted">Banks and support staff do not need you to tell them your secret codes.</p></div></div><div class="row-item"><div><b>2. Verify urgent requests independently</b><p class="muted">Call the official number on your bank card or open the official app yourself.</p></div></div><div class="row-item"><div><b>3. Never install remote-access apps for a caller</b><p class="muted">A caller claiming to be police, a bank, or customer support should not control your device.</p></div></div><div class="row-item"><div><b>4. If money was lost in India</b><p class="muted">Contact your bank immediately and report cyber financial fraud at 1930 or cybercrime.gov.in.</p></div></div></div>
+          <div class="panel-head" style="margin-top:16px"><div><h3>Approved devices</h3><p class="muted">Only devices already linked to this account.</p></div><button class="btn ghost sm" id="family-devices" type="button">Manage devices</button></div><div id="family-device-summary" class="rows"></div>
+        </div>
+      </section>
+
+      <!-- alerts -->
+      <section id="tab-alerts" class="tab hidden">
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>Notifications</h3><p class="muted">Raised by scans and device changes on your other devices.</p></div>
+            <button class="btn ghost sm" id="mark-read" type="button"><svg><use href="#i-check"/></svg>Mark all read</button>
+          </div>
+          <div id="alerts" class="rows"></div>
+        </div>
+      </section>
+
+      <!-- devices -->
+      <section id="tab-devices" class="tab hidden">
+        <div id="pair-requests"></div>
+        <div class="panel">
+          <div class="panel-head">
+            <div><h3>Linked devices</h3><p class="muted">Every device that receives this account's alerts. Up to 5.</p></div>
+            <button class="btn primary sm" id="add-device" type="button"><svg><use href="#i-plus"/></svg>Add device</button>
+          </div>
+          <div id="devices" class="rows"></div>
+        </div>
+      </section>
+
+      <!-- settings -->
+      <section id="tab-settings" class="tab hidden">
+        <div class="settings-grid">
+          <div class="panel">
+            <div class="panel-head"><div><h3>Subscription</h3></div></div>
+            <dl class="kv" id="my-plan"><dt>Plan</dt><dd>…</dd></dl>
+            <p class="muted" style="font-size:.85rem;margin:8px 0 0">To upgrade or renew, contact SCAMWISE support. Plans: Individual ₹299/mo (1 device) · Family ₹699/mo (3) · Business ₹1,899/mo (8) · Enterprise custom.</p>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><h3>This device</h3></div></div>
+            <dl class="kv" id="this-device"></dl>
+            <div class="row-end start"><button class="btn ghost sm" id="rename" type="button">Rename</button><button class="btn ghost sm" id="sync-now" type="button">Sync now</button></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><h3>Alerts</h3></div></div>
+            <label class="setting"><span><b>High-risk scans</b><small>Alert my other devices. Code-exposure alerts are always sent.</small></span><input type="checkbox" class="switch" data-pref="notify_high"></label>
+            <label class="setting"><span><b>Medium-risk scans</b><small>Also alert for medium risk.</small></span><input type="checkbox" class="switch" data-pref="notify_medium"></label>
+            <div class="setting"><span id="notif-text"><b>Browser notifications</b></span><button class="btn ghost sm" id="notif-btn" type="button">Allow</button></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><h3>Privacy &amp; data</h3></div></div>
+            <label class="setting"><span><b>Share metadata with security team</b><small>Score, warning types, link domains, device name. Never message text.</small></span><input type="checkbox" class="switch" data-pref="share_with_admin"></label>
+            <label class="setting"><span><b>Keep a masked excerpt</b><small>Up to 280 characters with codes, numbers and emails masked.</small></span><input type="checkbox" class="switch" data-pref="share_excerpt"></label>
+            <label class="setting"><span><b>Retention</b><small>Older scan records are deleted every night.</small></span>
+              <select data-pref="retention_days" class="select-sm"><option value="7">7 days</option><option value="30">30 days</option><option value="90">90 days</option></select></label>
+            <div class="setting"><span><b>Delete scan history</b><small>Removes every record on every device.</small></span><button class="btn danger-ghost sm" id="delete-all" type="button">Delete all</button></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><div><h3>Account</h3></div></div>
+            <dl class="kv"><dt>Name</dt><dd id="acct-name">—</dd><dt>Email</dt><dd id="acct-email">—</dd></dl>
+            <div class="setting"><span><b>Password</b><small>Send yourself a link to set a new password.</small></span><button class="btn ghost sm" id="change-pw" type="button">Change</button></div>
+            <div class="setting"><span><b>Sign out</b><small>This device stays linked.</small></span><button class="btn ghost sm" id="signout" type="button">Sign out</button></div>
+            <div class="setting"><span><b>Unlink this device</b><small>Ends its session on the server. It will need approval to rejoin.</small></span><button class="btn danger-ghost sm" id="unlink-self" type="button">Unlink</button></div>
+            <p class="fine mono" id="version"></p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js" defer></script>
+<script type="module" src="app.js"></script>
+</body>
+</html>

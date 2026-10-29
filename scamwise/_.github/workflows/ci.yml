@@ -1,0 +1,66 @@
+name: Test & deploy website
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+  pages: write      # deploy the website
+  id-token: write
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  engine:
+    name: Engine tests (Node)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: node --test tests/engine.test.mjs
+      - name: Engine copies are in sync with shared/engine
+        run: |
+          for d in web/engine supabase/functions/analyze; do diff -q shared/engine/analyzer.js $d/analyzer.js; diff -q shared/engine/rules.json $d/rules.json; done
+      - name: Web app scripts parse
+        run: for f in web/assets/*.js web/app/*.js web/admin/*.js web/engine/*.js; do node --check "$f"; done
+
+  pages:
+    name: Website → GitHub Pages
+    runs-on: ubuntu-latest
+    needs: engine
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+        with: { enablement: true }
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: web }
+      - id: deploy
+        uses: actions/deploy-pages@v4
+
+  e2e:
+    name: Live end-to-end test (real backend)
+    runs-on: ubuntu-latest
+    needs: engine
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm install --no-save @supabase/supabase-js@2
+      - name: Run e2e against Supabase
+        env:
+          SCAMWISE_TEST_USERS: ${{ secrets.SCAMWISE_TEST_USERS }}
+        run: node tests/e2e.mjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-report
+          path: e2e-report.json
+          if-no-files-found: ignore

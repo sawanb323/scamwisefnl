@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "SCAMWISE Link & Message Checker",
+  "version": "0.1.0",
+  "description": "Locally analyze text you paste for common scam signals. No page content is collected.",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "SCAMWISE Scan"
+  },
+  "permissions": []
+}
