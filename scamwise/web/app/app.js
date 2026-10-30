@@ -618,7 +618,7 @@ async function refreshPairing() {
 }
 
 // ------------------------------------------------------------------ tabs
-$$('.side button').forEach((b) => (b.onclick = () => switchTab(b.dataset.tab)));
+$$('.side button[data-tab]').forEach((b) => (b.onclick = () => switchTab(b.dataset.tab)));
 const TITLES = {
   scan: ['Scan', 'Check a message or link before you act on it'],
   dashboard: ['Dashboard', 'Your plan, devices and security activity'],
@@ -630,11 +630,12 @@ const TITLES = {
   settings: ['Settings', 'Alerts, privacy and this device'],
 };
 function switchTab(tab) {
+  if (!TITLES[tab]) return;
   S.tab = tab;
   $('#page-title').textContent = TITLES[tab][0];
   $('#page-sub').textContent = TITLES[tab][1];
   window.scrollTo({ top: 0 });
-  $$('.side button').forEach((x) => x.classList.toggle('on', x.dataset.tab === tab));
+  $$('.side button[data-tab]').forEach((x) => x.classList.toggle('on', x.dataset.tab === tab));
   ['scan', 'dashboard', 'history', 'insights', 'family', 'alerts', 'devices', 'settings'].forEach((t) => $('#tab-' + t)?.classList.toggle('hidden', t !== tab));
   if (tab === 'dashboard') refreshDashboard();
   if (tab === 'alerts') markAlertsRead();
