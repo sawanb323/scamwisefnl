@@ -388,3 +388,20 @@ label.setting { cursor: pointer; }
 .plan-card b.price { font-size: 20px; }
 .plan-card ul { margin: 0; padding-left: 18px; color: var(--ink-2); font-size: 13px; }
 @media (max-width: 860px) { .dash-grid { grid-template-columns: 1fr; } }
+
+/* screenshot scan */
+.shot { margin: 0 0 12px; padding: 10px; border: 1px solid var(--line-2); border-radius: var(--r-sm); background: var(--surface-2); }
+.shot[hidden] { display: none; }
+.shot-img { position: relative; text-align: center; }
+.shot-img img { max-width: 100%; max-height: 300px; border-radius: 8px; object-fit: contain; display: inline-block; }
+.shot-x { position: absolute; top: 6px; right: 6px; width: 30px; height: 30px; border-radius: 50%; border: 0; background: rgba(0,0,0,.65); color: #fff; font-size: 18px; line-height: 30px; cursor: pointer; }
+.shot-meta { display: flex; justify-content: space-between; gap: 8px; margin-top: 8px; font-size: 12px; color: var(--ink-3); }
+.shot details { margin-top: 8px; font-size: 12px; }
+.shot details summary { cursor: pointer; }
+.shot-text { white-space: pre-wrap; margin-top: 6px; }
+.composer.drop { outline: 2px dashed var(--accent); outline-offset: 4px; }
+.shot-result { display: flex; align-items: center; gap: 10px; margin: 0 0 14px; padding: 8px; border-radius: var(--r-sm); background: var(--surface-2); font-size: 12px; }
+.shot-result img { width: 56px; height: 56px; object-fit: cover; border-radius: 6px; }
+#result.stale { position: relative; }
+#result.stale > * { opacity: .25; filter: blur(1px); pointer-events: none; }
+#result.stale::after { content: attr(data-stale-msg); position: absolute; left: 50%; top: 80px; transform: translateX(-50%); max-width: 80%; text-align: center; padding: 10px 14px; border-radius: 10px; background: rgba(20,24,32,.92); color: #fff; font-size: 14px; line-height: 1.4; z-index: 2; }

@@ -203,8 +203,9 @@
               <label for="msg" class="field-label">Message or link</label>
               <span class="mono muted" id="charcount"></span>
             </div>
-            <textarea id="msg" rows="9" maxlength="5000" placeholder="Paste the full message here, including any links. Codes, card numbers and passwords are removed before anything is sent."></textarea>
-            <div class="panel-head" style="margin-top:12px"><div><b>Scan a screenshot</b><p class="muted">OCR runs in your browser. The image itself is not uploaded.</p></div><label class="btn ghost sm" for="screenshot-file">Choose image</label><input id="screenshot-file" type="file" accept="image/png,image/jpeg,image/webp" hidden></div><p class="fine" id="ocr-status" aria-live="polite">PNG, JPG or WebP · up to 8 MB</p>
+            <div class="shot" id="shot" hidden><div class="shot-img"><img alt="Screenshot being checked"><button type="button" class="shot-x" id="shot-remove" aria-label="Remove screenshot" title="Remove screenshot">&times;</button></div><div class="shot-meta"><span class="shot-name"></span><span class="shot-state"></span></div><details hidden><summary>Text read from the screenshot (this is what gets checked)</summary><div class="shot-text"></div></details></div>
+            <textarea id="msg" rows="9" maxlength="5000" placeholder="Paste the full message here, including any links, or paste a screenshot (Ctrl+V). Codes, card numbers and passwords are removed before anything is sent."></textarea>
+            <div class="panel-head" style="margin-top:12px"><div><b>Scan a screenshot</b><p class="muted">OCR runs in your browser. The image itself is not uploaded.</p></div><label class="btn ghost sm" for="screenshot-file">Choose image</label><input id="screenshot-file" type="file" accept="image/png,image/jpeg,image/webp,image/gif,image/bmp" hidden></div><p class="fine" id="ocr-status" aria-live="polite">PNG, JPG or WebP · up to 10 MB · or paste a screenshot with Ctrl+V</p>
             <div class="samples"><span class="muted">Try an example</span><div class="chips" id="samples"></div></div>
             <div class="composer-foot">
               <p class="redact" id="redactnote"></p>

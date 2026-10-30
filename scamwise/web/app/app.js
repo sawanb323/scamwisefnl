@@ -665,22 +665,26 @@ function onMsgInput() {
   const n = Object.values(r.counts).reduce((a, b) => a + b, 0);
   $('#redactnote').innerHTML = n ? `${icon('lock')}${n} sensitive value${n > 1 ? 's' : ''} will be removed before sending` : '';
 }
-$('#msg').addEventListener('input', onMsgInput);
+$('#msg').addEventListener('input', () => { onMsgInput(); markResultStale('The message changed. Press Analyze to check this text.'); });
 const EMPTY_RESULT = `<div class="empty"><span class="ico">${icon('shield')}</span><b>No message checked yet</b><span>Paste a message on the left or pick an example. You'll get a risk score, the reasons behind it and what to do next.</span></div>`;
 $('#result').innerHTML = EMPTY_RESULT;
-$('#clear').onclick = () => { $('#msg').value = ''; onMsgInput(); $('#result').innerHTML = EMPTY_RESULT; $('#msg').focus(); };
+$('#clear').onclick = () => { removeShot(); clearResultStale(); $('#msg').value = ''; onMsgInput(); $('#result').innerHTML = EMPTY_RESULT; $('#msg').focus(); };
 $('#analyse').onclick = runScan;
 $('#msg').addEventListener('keydown', (e) => { if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) runScan(); });
 
 async function runScan() {
   await engineReady;
   const text = $('#msg').value.trim();
-  if (!text) { toast('Paste a message or link first.'); return; }
+  if (!text) { toast(shot && !shot.text ? 'Still reading the screenshot… one moment.' : 'Paste a message, link or screenshot first.'); $('#msg').focus(); return; }
+  clearResultStale();
   const btn = $('#analyse'); btn.disabled = true; btn.firstChild.textContent = 'Analyzing… ';
   $('#result').innerHTML = '<div class="skeleton"><i style="width:40%;height:26px"></i><i style="width:85%"></i><i style="width:70%"></i><i style="width:90%"></i><i style="width:60%"></i></div>';
   try {
     const out = await analyze(text);
     renderResult(out);
+    if (shot?.text && shot.text.trim() === text) {
+      $('#result').insertAdjacentHTML('afterbegin', `<div class="shot-result"><img alt="" src="${esc(shot.url)}"><span>Result for the screenshot you added</span></div>`);
+    }
   } catch (e) {
     $('#result').innerHTML = `<div class="empty"><span class="ico">${icon('alert')}</span><b>Couldn't analyze this</b><span>${esc(e.message)}</span></div>`;
   } finally { btn.disabled = false; btn.firstChild.textContent = 'Analyze '; }
@@ -810,25 +814,156 @@ $('#export-report')?.addEventListener('click', () => {
 });
 $('#family-devices')?.addEventListener('click', () => switchTab('devices'));
 
-// Screenshot OCR is performed locally in the browser. Images are never sent to Supabase.
-$('#screenshot-file')?.addEventListener('change', async (e) => {
-  const file = e.target.files?.[0]; if (!file) return;
-  const status = $('#ocr-status');
-  if (!/^image\/(png|jpeg|webp)$/.test(file.type) || file.size > 8 * 1024 * 1024) {
-    status.textContent = 'Choose a PNG, JPG or WebP image smaller than 8 MB.'; e.target.value = ''; return;
+// ------------------------------------------------------------------ screenshot scan
+// OCR runs locally in the browser. The image is shown on this page only and is never uploaded:
+// only the (redacted) text read from it is analysed, exactly like a pasted message.
+const SHOT_MAX = 10 * 1024 * 1024;
+const SHOT_TYPES = /^image\/(png|jpeg|webp|gif|bmp)$/;
+let shot = null;          // { url, name, size, text, conf }
+let ocrRun = 0;           // guards against an older OCR finishing after a newer image
+
+// Upscale small images, convert to grayscale, invert dark-mode screenshots and stretch contrast.
+// Tesseract is far more accurate on large, dark-text-on-light images.
+async function prepareForOcr(file) {
+  const img = await createImageBitmap(file);
+  let scale = img.width < 1600 ? Math.min(3, 1600 / img.width) : 1;
+  if (Math.max(img.width, img.height) * scale > 4000) scale = 4000 / Math.max(img.width, img.height);
+  const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const ctx = c.getContext('2d', { willReadFrequently: true });
+  ctx.imageSmoothingQuality = 'high';
+  ctx.drawImage(img, 0, 0, w, h); img.close?.();
+  const d = ctx.getImageData(0, 0, w, h), p = d.data, n = p.length / 4;
+  const hist = new Uint32Array(256); let sum = 0;
+  for (let i = 0; i < p.length; i += 4) { const g = (p[i] * 299 + p[i + 1] * 587 + p[i + 2] * 114) / 1000 | 0; p[i] = g; hist[g]++; sum += g; }
+  const invert = sum / n < 110;
+  let lo = 0, hi = 255, acc = 0;
+  for (let i = 0; i < 256; i++) { acc += hist[i]; if (acc > n * 0.01) { lo = i; break; } }
+  acc = 0;
+  for (let i = 255; i >= 0; i--) { acc += hist[i]; if (acc > n * 0.01) { hi = i; break; } }
+  const range = Math.max(1, hi - lo);
+  for (let i = 0; i < p.length; i += 4) {
+    let g = Math.max(0, Math.min(255, (p[i] - lo) * 255 / range)); if (invert) g = 255 - g;
+    p[i] = p[i + 1] = p[i + 2] = g; p[i + 3] = 255;
   }
-  if (!window.Tesseract?.recognize) { status.textContent = 'OCR library did not load. Check your internet connection and try again.'; return; }
-  status.textContent = 'Reading screenshot locally…';
+  ctx.putImageData(d, 0, 0);
+  return c;
+}
+
+// Remove phone UI noise (clock, battery) and repair links that OCR breaks ("site xyz/login").
+const OCR_TLDS = 'com|in|net|org|xyz|top|info|online|site|live|club|shop|co|io|me|ly|link|click|buzz|icu|vip|app|store|tk|ml|ga|cf|gq|cc|biz|gov|sbi|bank';
+function cleanOcrText(t) {
+  let lines = String(t || '').replace(/\r/g, '').split('\n').map((l) => l.trim());
+  lines = lines.filter((l) => !l || !(/^\d{1,2}[:.]\d{2}\s*(am|pm)?$/i.test(l) || /^\d{1,2}[:.]?\d{2}\s*(am|pm)$/i.test(l)
+    || (l.length < 14 && /^[\W\d]{0,3}(\d{1,3}%|4g|5g|lte|volte)[\W\d\s%a-z]{0,10}$/i.test(l))
+    || (l.length < 30 && /^\d{1,2}[:.]\d{2}\b/.test(l) && /\d{1,3}\s?%|\b(4g|5g|lte|volte|wifi)\b/i.test(l))     // status bar: "9:41 87%"
+    || /^(today|yesterday|mon|tue|wed|thu|fri|sat|sun)[a-z]*,?\s+\d{1,2}[:.]?\d{2}\s*(am|pm)?$/i.test(l)));   // "Yesterday 7:15 PM
+  lines = lines.map((l) => l.replace(/\s+((today|yesterday)\s+)?\d{1,2}[:.]\d{2}\s*(am|pm)?$/i, '').replace(/\s+((today|yesterday)\s+)?\d{1,2}[:.]?\d{2}\s*(am|pm)$/i, ''));
+  const out = [];
+  for (const l of lines) {
+    const prev = out[out.length - 1];
+    if (l && prev && !/[.!?:।]$/.test(prev) && (/^[a-z0-9(ऀ-ॿ]/.test(l) || (prev.length > 20 && /^[A-Z]/.test(l)))) out[out.length - 1] = prev + ' ' + l;
+    else out.push(l);
+  }
+  t = out.join('\n').replace(/\n{3,}/g, '\n\n');
+  t = t.replace(/\b(h\s*t\s*t\s*p\s*s?)\s*:\s*\/\s*\//gi, (m) => m.replace(/\s+/g, '').toLowerCase());
+  t = t.replace(/\b(https?:\/\/)\s+/gi, '$1');
+  t = t.replace(new RegExp(`([a-z0-9-]{2,})\\s*[,\\s]\\s*(${OCR_TLDS})(?=[\\/\\s]|$)`, 'gi'), (m, host, tld, off, str) => {
+    const before = str.slice(Math.max(0, off - 40), off);
+    return (/(https?:\/\/|www\.)[\w.-]*$/i.test(before) || str.charAt(off + m.length) === '/') ? `${host}.${tld}` : m;
+  });
+  return t.trim();
+}
+
+function fmtSize(b) { return b > 1048576 ? `${(b / 1048576).toFixed(1)} MB` : `${Math.max(1, Math.round(b / 1024))} KB`; }
+
+function renderShot(state) {
+  const box = $('#shot');
+  if (!shot) { box.hidden = true; box.querySelector('img').removeAttribute('src'); return; }
+  box.hidden = false;
+  box.querySelector('img').src = shot.url;
+  box.querySelector('.shot-name').textContent = `${shot.name} · ${fmtSize(shot.size)}`;
+  box.querySelector('.shot-state').textContent = state || '';
+  const det = box.querySelector('details');
+  det.hidden = !shot.text;
+  box.querySelector('.shot-text').textContent = shot.text || '';
+}
+
+function removeShot({ keepText = false } = {}) {
+  ocrRun++;
+  if (shot && !keepText && $('#msg').value.trim() === (shot.text || '').trim()) { $('#msg').value = ''; onMsgInput(); }
+  if (shot?.url) URL.revokeObjectURL(shot.url);
+  shot = null; renderShot();
+  $('#ocr-status').textContent = 'PNG, JPG or WebP · up to 10 MB · or paste a screenshot with Ctrl+V';
+}
+
+// Mark the current verdict as out of date so it is never read as the answer for different input.
+function markResultStale(msg) {
+  const r = $('#result');
+  if (!r.querySelector('.verdict')) return;
+  r.dataset.staleMsg = msg; r.classList.add('stale');
+}
+function clearResultStale() { $('#result').classList.remove('stale'); }
+
+async function scanScreenshot(file) {
+  const status = $('#ocr-status');
+  if (!file) return;
+  if (!SHOT_TYPES.test(file.type)) { status.textContent = 'That file is not a supported image. Use a PNG, JPG or WebP screenshot.'; return; }
+  if (file.size > SHOT_MAX) { status.textContent = 'That image is larger than 10 MB. Crop it or take a smaller screenshot.'; return; }
+  if (!window.Tesseract?.recognize) { status.textContent = 'The text reader did not load. Check your internet connection and try again.'; return; }
+  if (shot?.url) URL.revokeObjectURL(shot.url);
+  const run = ++ocrRun;
+  shot = { url: URL.createObjectURL(file), name: file.name || 'pasted-screenshot.png', size: file.size, text: '', conf: null };
+  renderShot('Reading text…');
+  status.textContent = 'Reading the screenshot on this device…';
+  $('#result').innerHTML = `<div class="empty"><span class="ico">${icon('shield')}</span><b>Reading your screenshot…</b><span>The text is read on this device. The check starts automatically.</span></div>`;
+  clearResultStale();
   try {
-    const result = await window.Tesseract.recognize(file, 'eng');
-    const text = String(result.data?.text || '').trim();
-    if (!text) throw new Error('No readable text found. Try a clearer screenshot.');
-    $('#msg').value = text.slice(0, 5000); onMsgInput();
-    status.textContent = 'Text extracted locally. Review it, then press Analyze. The image was not uploaded.';
-    $('#msg').focus(); toast('Screenshot text extracted. Review before analyzing.');
-  } catch (err) { status.textContent = err.message || 'Could not read screenshot.'; }
-  finally { e.target.value = ''; }
+    let input = file;
+    try { input = await prepareForOcr(file); } catch { /* fall back to the original image */ }
+    let result;
+    try { result = await window.Tesseract.recognize(input, 'eng+hin'); }
+    catch { result = await window.Tesseract.recognize(input, 'eng'); }   // Hindi data unavailable -> English only
+    if (run !== ocrRun) return;                                            // a newer image replaced this one
+    const text = cleanOcrText(result.data?.text).slice(0, 5000);
+    if (!text) throw new Error('No readable text found in this image. Try a clearer screenshot or paste the message.');
+    shot.text = text; shot.conf = Math.round(result.data?.confidence ?? 0);
+    $('#msg').value = text; onMsgInput();
+    const low = shot.conf && shot.conf < 60;
+    renderShot(low ? `Text read (${shot.conf}% confidence) · checking…` : 'Text read · checking…');
+    status.textContent = low
+      ? 'The screenshot was hard to read. Check the text below, fix any mistakes and press Analyze again.'
+      : 'Text read on this device. The image was not uploaded.';
+    await runScan();
+    if (run === ocrRun && shot) renderShot(low ? `Checked · ${shot.conf}% read confidence` : 'Checked');
+  } catch (err) {
+    if (run !== ocrRun) return;
+    renderShot('Could not read text');
+    status.textContent = err.message || 'Could not read the screenshot.';
+    $('#result').innerHTML = EMPTY_RESULT;
+  }
+}
+
+$('#screenshot-file')?.addEventListener('change', (e) => { const f = e.target.files?.[0]; e.target.value = ''; scanScreenshot(f); });
+$('#shot-remove')?.addEventListener('click', () => { removeShot(); markResultStale('Screenshot removed. Paste a message or add another screenshot.'); });
+function imageFromClipboard(e) {
+  for (const it of e.clipboardData?.items || []) if (it.kind === 'file' && it.type.startsWith('image/')) return it.getAsFile();
+  return null;
+}
+// paste a screenshot into the message box, or anywhere on the Scan tab
+document.addEventListener('paste', (e) => {
+  if ($('#tab-scan').classList.contains('hidden') || $('#tab-scan').offsetParent === null) return;
+  if (e.target !== $('#msg') && e.target?.matches?.('input, textarea, [contenteditable]')) return;
+  const f = imageFromClipboard(e);
+  if (f) { e.preventDefault(); scanScreenshot(f); }
 });
+// drag and drop an image onto the composer
+{
+  const card = $('#tab-scan .composer');
+  card?.addEventListener('dragover', (e) => { if ([...(e.dataTransfer?.types || [])].includes('Files')) { e.preventDefault(); card.classList.add('drop'); } });
+  card?.addEventListener('dragleave', (e) => { if (!card.contains(e.relatedTarget)) card.classList.remove('drop'); });
+  card?.addEventListener('drop', (e) => { card.classList.remove('drop'); const f = e.dataTransfer?.files?.[0]; if (f) { e.preventDefault(); scanScreenshot(f); } });
+}
 
 // ------------------------------------------------------------------ history
 $('#hist-filter').onchange = renderHistory;
