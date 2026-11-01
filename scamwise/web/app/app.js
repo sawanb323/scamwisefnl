@@ -625,7 +625,7 @@ const TITLES = {
   history: ['History', 'Every scan across your linked devices'],
   insights: ['Insights', 'Understand scam patterns across your scans'],
   family: ['Family safety', 'Practical protection guidance for your household'],
-  alerts: ['Alerts', 'What your other devices have flagged'],
+  alerts: ['Alerts', 'Link checks and alerts from your devices'],
   devices: ['Devices', 'Who receives this account\'s alerts'],
   settings: ['Settings', 'Alerts, privacy and this device'],
 };
@@ -698,6 +698,7 @@ async function analyze(text) {
   if (!error) {
     S.lastSync = new Date(); setSync(S.realtimeUp ? 'synced' : 'connecting');
     refreshIncidents();
+    refreshAlerts();
     return { ...data, offline: false, sent: red.text };
   }
   if (error.name === 'FunctionsHttpError') {
@@ -744,7 +745,13 @@ function renderResult(out) {
   const r = out.result;
   const c = COLORS[r.risk_level];
   const ti = out.threat_intel;
+  const L = out.links;
+  const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;
   const tiLine = out.offline ? 'Not checked (offline)'
+    : L && L.found
+      ? `${L.checked}/${L.found} ${L.found === 1 ? 'link' : 'links'} checked · ` +
+        (L.flagged ? `${L.flagged} flagged` : 'none flagged') +
+        (ti?.status === 'match' ? ' · listed as malicious' : '')
     : ti?.status === 'match' ? 'Listed as malicious'
     : ti?.status === 'no_match' ? 'No record (not proof of safety)'
     : ti?.status === 'not_applicable' ? 'No links found'
@@ -769,8 +776,11 @@ function renderResult(out) {
     ${r.caveats.map((x) => `<p class="caveat">${icon('info')}<span>${esc(x)}</span></p>`).join('')}
     <div class="meta">
       <div><span>Link check</span><b>${tiLine}</b></div>
-      <div><span>Alerts sent</span><b>${out.offline ? '—' : out.alerts_sent ? `${out.alerts_sent} device${out.alerts_sent > 1 ? 's' : ''}` : 'None'}</b></div>
-      <div><span>Stored</span><b>${out.offline ? 'Queued' : 'Metadata only'}</b></div>
+      <div><span>Alerts sent</span><b>${out.offline ? '—'
+        : out.alerts_sent ? `${plural(out.alerts_sent, 'alert')}${out.alerts?.devices > 1 ? ` · ${out.alerts.devices} devices` : ''}`
+        : 'None'}</b></div>
+      <div><span>Stored</span><b>${out.offline ? 'Queued'
+        : `Metadata only${out.stored?.domains?.length ? ` · ${plural(out.stored.domains.length, 'domain')}` : ''}`}</b></div>
     </div>
     <details class="sent"><summary>What was sent to the server</summary><pre>${esc(out.sent)}</pre></details>`;
   requestAnimationFrame(() => requestAnimationFrame(() => {
@@ -1028,8 +1038,15 @@ let marking = false;
 async function markAlertsRead() {
   if (marking || !S.alerts.some((a) => !a.read_at)) return;
   marking = true;
-  await sb.rpc('mark_alerts_read', {}).catch(() => {});
-  marking = false;
+  try {
+    const { data, error } = await sb.rpc('mark_alerts_read', {});
+    if (error) toast(friendly(error));
+    else if (data) toast(`${data} alert${data > 1 ? 's' : ''} marked as read.`);
+  } catch (e) {
+    console.error('mark_alerts_read failed', e);
+  } finally {
+    marking = false;
+  }
   await refreshAlerts();
 }
 $('#mark-read').onclick = markAlertsRead;
